@@ -76,6 +76,16 @@ myFrame[myFrame$index2 == "nee",]$rounded <- "0"
 myFrame[myFrame$index2 != "nee",]$rounded <- "1"
 names(myFrame)
 myFrame
+
+
+myFrame$modulo2 <- myFrame$int %%2
+
+myFrame$myRounded <- NA
+myFrame[round(myFrame$decimal) == 0,]$myRounded <- "0"
+myFrame[round(myFrame$decimal) == 1,]$myRounded <- "1"
+names(myFrame)
+myFrame
+
 ### (run only the above lines of code)
 ### you created a data frame. I also asked some questions after specific commands. 
 ### You can answer these questions behind the comment section to keep track of 
@@ -87,5 +97,41 @@ myFrame
 ### Use the section below to address questions for sections 4.1.G and further 
 ###
 ###
+
+
+result <- with(myFrame[myFrame$index1 == "A",],mean(sum(int+decimal)/sum(int)*exp(decimal)))
+#the function 'with' allows for applying an expression to the datastructure 
+#given in the first parameter
+
+for (i in unique(myFrame$index1))
+{
+  print(i)
+  with(myFrame[myFrame$index1 == i,],print(mean(int))) 
+} 
+# it loops over every 'unique' item in index1 (in myFrame), namely, "A" and "B" and 
+# prints the mean of the int category. XXX 
+#if "print" is removed, there is no result to be seen in the console.  
+
+cntr <- 1
+summation <- 0 
+while(summation < 10) 
+  {
+    summation <- summation + myFrame[cntr,]$int
+    cntr <- cntr + 1 
+  }
+print(paste("Counter is:", cntr, "Summation is:", summation))
+#this code calculates a the summation of the values of the int category in myFrame, until it 
+#reaches the value of 10. meanwhile, it ups a counter, that basically tracks how many 
+#times the summation is updated.
+
+
+
+
+
+
+
+
+
+
 
 
