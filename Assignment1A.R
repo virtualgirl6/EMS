@@ -38,21 +38,44 @@ rm(list = ls())
 int <- 0:9
 decimal <- seq(0,0.9,0.1)         
 ### what does the function seq do?
+# Creates a sequence of elements as a list/vector where the first argument is the starting point,
+# the second is the end point and the third is the increments from start to end.
 
 index <- rep(c("A","B"),length(int)/2)
 indexAlt <- c(rep("nee",length(int)/2),rep("ja",length(int)/2)) 
 
-myFrame <- data.frame(index1= index,index2= indexAlt,int,decimal) 
+myFrame <- data.frame(index1=index,index2= indexAlt,int,decimal) 
 ### what does data.frame do?
+# data.Frame constructs a data stucture similar to a table in which the values each argument will
+# be stored as a column.
 
-myFrame             ### What is a data.frame? 
-myFrame[1:5,]       ### [1:5,] means:
-myFrame[,1:2]			  ### [,1:2]  means:
-names(myFrame)      ### names means:
+myFrame             ### What is a data.frame? a data structure representing a table/matrix
+myFrame[1:5,]       ### [1:5,] means: returns the first 5 rows of myFrame
+myFrame[,1:2]			  ### [,1:2]  means: returns the first 2 columns
+names(myFrame)      ### names means: returns the names of the columns data.frame used upon initialization
 myFrame$index1
-myFrame$index2			### in this setting, the $ means:
-dim(myFrame)				### dim means:
+myFrame$index2			### in this setting, the $ means: returns the values stored in the column of index1/index2
+dim(myFrame)				### dim means: returns number of rows and colums; the dimensions of the data.frame
 
+###
+### Questions from the section 4.1.E:
+###
+
+# myFrame[myFrame$index1 == "A",]  ### Returns all the values of myFrame for which the value stored
+#                                      in index1 is equal to 'A'.
+# myFrame[myFrame$index1 == "A" & myFrame$index2 == "nee",] ### Returns all the values of myFrame of which
+#                                                               index1 = 'A' and index2 = 'nee'.
+myFrame$oddEven <- NA
+myFrame[myFrame$index1 == "A",]$oddEven <- "Even"
+myFrame[myFrame$index1 != "A",]$oddEven <- "Odd"
+names(myFrame)
+myFrame
+
+myFrame$rounded <- NA
+myFrame[myFrame$index2 == "nee",]$rounded <- "0"
+myFrame[myFrame$index2 != "nee",]$rounded <- "1"
+names(myFrame)
+myFrame
 ### (run only the above lines of code)
 ### you created a data frame. I also asked some questions after specific commands. 
 ### You can answer these questions behind the comment section to keep track of 
