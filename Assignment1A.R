@@ -79,6 +79,7 @@ myFrame
 
 
 myFrame$modulo2 <- myFrame$int %%2
+myFrame
 
 myFrame$myRounded <- NA
 myFrame[round(myFrame$decimal) == 0,]$myRounded <- "0"
@@ -86,6 +87,9 @@ myFrame[round(myFrame$decimal) == 1,]$myRounded <- "1"
 names(myFrame)
 myFrame
 
+
+require(ggplot2)
+qplot(c(4.3,5.2,6.9),c(10.1,11.2,11.9),xlab="x label", ylab="ylabel")
 ### (run only the above lines of code)
 ### you created a data frame. I also asked some questions after specific commands. 
 ### You can answer these questions behind the comment section to keep track of 
@@ -97,9 +101,10 @@ myFrame
 ### Use the section below to address questions for sections 4.1.G and further 
 ###
 ###
-
+mean(myFrame[myFrame$index1 == "A",]$int)
 
 result <- with(myFrame[myFrame$index1 == "A",],mean(sum(int+decimal)/sum(int)*exp(decimal)))
+result
 #the function 'with' allows for applying an expression to the datastructure 
 #given in the first parameter
 
@@ -109,8 +114,9 @@ for (i in unique(myFrame$index1))
   with(myFrame[myFrame$index1 == i,],print(mean(int))) 
 } 
 # it loops over every 'unique' item in index1 (in myFrame), namely, "A" and "B" and 
-# prints the mean of the int category. XXX 
-#if "print" is removed, there is no result to be seen in the console.  
+# prints the mean of each respective category.
+#if "print" is removed, there is no result to be seen in the console. 
+# Therefore we see that the print statement allowes us to show results in the console window
 
 cntr <- 1
 summation <- 0 
@@ -122,7 +128,7 @@ while(summation < 10)
 print(paste("Counter is:", cntr, "Summation is:", summation))
 #this code calculates a the summation of the values of the int category in myFrame, until it 
 #reaches the value of 10. meanwhile, it ups a counter, that basically tracks how many 
-#times the summation is updated.
+#times the summation is updated.  ofwel number of iterations 
 
 
 
