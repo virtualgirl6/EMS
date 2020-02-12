@@ -184,6 +184,7 @@ mysteryFunction(test,5)
 #>slicerFunction(mysteryFunction(slicerFunction(test),5),15)
 #in this function call '5' is the parameter given to the second slicerfunction, and '15' 
 #to the mysteryfunction. 
+<<<<<<< HEAD
 test <- c(1,1,2,2,3,3,3,4,5,6,7)
 test
 search <- c(1,3,4,2,2,3,3,4,1,6,7)
@@ -206,6 +207,15 @@ myCounter <- function(number)
 }
 myCounter(1)
 
+=======
+
+myCounter <- function(number)
+{
+  result <- number + (c<-which(number==number))
+  result
+}
+myCounter(c(10:1))
+>>>>>>> 8407e9c8ddcec7bd0bee56688e28825c80babb24
 setwd ("~/GitHub/EMS") 
 
 myTable1 <- read.csv("file1.csv", header=TRUE,sep=",")
