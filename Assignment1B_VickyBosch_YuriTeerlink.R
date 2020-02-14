@@ -2,6 +2,7 @@
 # pad voor vicky: setwd ("~/GitHub/EMS")
 
 #set working directory
+rm(list = ls())
 setwd("/Users/iehkaatee/Documents/UU/AI/jaar\ 3/exp\ method/Rstudio/EMS")
 
 #load .csv file 
@@ -50,6 +51,10 @@ resultTable
 #G. Eventmessage2 - summary()
 
 
+###
+###SINGLE TYPE TASK
+###
+
 tableTypeTask <- resultTable[resultTable$partOfExperiment == "practiceTyping",]
 tableTypeTask
 
@@ -65,17 +70,80 @@ summary(tableTypeTask2$Eventmessage1)
 tableTypeTask3 <- tableTypeTask2[tableTypeTask2$Eventmessage1 == "keypress" &  tableTypeTask2$LocalTime <= 150,]
 
 nrow(tableTypeTask3[tableTypeTask3$Eventmessage1 =="keypress",])
-ikiCor <- 150/nrow(tableTypeTask3[tableTypeTask3$Eventmessage1 =="keypress",])
+ikiCor <- 150/nrow(tableTypeTask3)
 ikiCor
 
 ikiCornNcor <- 150/ length(tableTypeTask2$Eventmessage1)
 ikiCornNcor
 
 
-ikisCorrectOnly <- with(tableTypeTask2[tableTypeTask3$Eventmessage1 =="keypress",],diff(c(0,LocalTime)))
+ikisCorrectOnly <- with(tableTypeTask3,diff(c(0,LocalTime)))
 ikisCorrectOnly
 
-ikisCorrectAndIncorrect <- with(tableTypeTask$Eventmessage1,diff(c(0,LocalTime)))
+ikisCorrectAndIncorrect <- with(tableTypeTask2,diff(c(0,LocalTime)))
 ikisCorrectAndIncorrect
+
+
+summary(sort(ikisCorrectOnly)) ;summary(sort(ikisCorrectAndIncorrect))
+
+
+library(ggplot2)
+allikis <- c(ikisCorrectOnly, ikisCorrectAndIncorrect)
+labels <-  c(rep("onlyCorrectAnalyzed",length(ikisCorrectOnly)),rep("CorrectAndIncorrectAnalyzed",length(ikisCorrectAndIncorrect)))
+frameIkis <- data.frame(allikis,labels)
+iki_plot <- ggplot(frameIkis, aes(x=labels, y=allikis)) +
+  geom_boxplot(stat = "boxplot")
+print(iki_plot)
+
+###
+###SCRABBLE TYPE TASK
+###
+
+scrabbleTypeTask <- resultTable[resultTable$partOfExperiment == "practiceScrabble",]
+scrabbleTypeTask
+unique(scrabbleTypeTask$Eventmessage1)
+unique(scrabbleTypeTask$Eventmessage2)
+
+tableScrabbleTask2 <- drop.levels(scrabbleTypeTask)
+sort(summary(tableScrabbleTask2[tableScrabbleTask2$Eventmessage1 == "keypressScrabble",]$Eventmessage2))
+
+unique(tableScrabbleTask2[tableScrabbleTask2$Eventmessage2 == "correctNewWord",]$currentScrabbleLettersTyped)
+
+tableScrabbleTask3 <- tableScrabbleTask2[tableScrabbleTask2$LocalTime <= 150,]
+tableScrabbleTask3$LocalTime
+
+
+library(ggplot2) ## check for more info: https://ggplot2.tidyverse.org/reference/ library(cowplot) ## for putting multiple graphs in one figure
+library(cowplot) ## for plotting multiple graphs in one figure
+
+## basic plot using ggplots' quickplot expression
+qplot(tableScrabbleTask2$LocalTime,tableScrabbleTask2$nrCorrectScrabbleWords, xlab = "Time (s)", ylab = "Number of Words", xlim = c(0,150), ylim = c(0,20))
+
+## same basic plot in standard ggplot expression
+plot1 <- ggplot(tableScrabbleTask3, aes(x=LocalTime, y=nrCorrectScrabbleWords)) +
+  geom_point() + 
+  xlab("Time (s)") + 
+  ylab("Number of Words") + 
+  ggtitle("Basic plot")
+print(plot1)
+
+## Clear and simple plot in which I have influenced what values are shown on the x- and y-axes
+plot2 <- ggplot(tableScrabbleTask2, aes(x=LocalTime, y=nrCorrectScrabbleWords)) +
+  geom_point(shape=21,colour="black", fill="white", size = 2, stroke = 1) + #geom_line() +
+  xlab("Time (s)") +
+  ylab("Number of Words") +
+  ggtitle("Clear plot") +
+  scale_x_continuous(limits=c(0,150), breaks=seq(0,150, 25), minor_breaks = seq(0,150, 5)) +
+  scale_y_continuous(limits=c(0,20), breaks=seq(0,20,5)) +
+  theme_minimal() +
+  theme(axis.line = element_line(colour = "black", size = 1, linetype = "solid"))
+print(plot2)
+
+## to put them next to each other in one figure
+plot_grid(plot1, plot2) ## for this function you need the cowplot package
+
+
+
+
 
 
