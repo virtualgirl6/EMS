@@ -31,17 +31,51 @@ resultTable
 #B. partOfExperiment - nominal
 #C. scrabbleWindowVisible - binary
 #D. scrabbleCondition - ordinal
-#E. nrCorrectScrabbleWords - interval/ratio
+#E. nrCorrectScrabbleWords - ratio
 #F. Eventmessage1 - nominal
-#G. Eventmessage2 - nominal !! misschien ratio? !!
+#G. Eventmessage2 - nominal
 
 #6. 
 # levels(), summary(), unique()
-#A. LocalTime - interval
-#B. partOfExperiment - nominal
-#C. scrabbleWindowVisible - binary
-#D. scrabbleCondition - ordinal
-#E. nrCorrectScrabbleWords - interval/ratio
-#F. Eventmessage1 - nominal
-#G. Eventmessage2 - nominal !! misschien ratio? !!
+# in general if the data stored is a factor it is usefull to use levels() to give an idea of the different values
+# stored, if we want more information, for instance the number of occurances of each of these values
+# we would use summary(). If the data stored is an int or numerical values it is usefull to use summary(),
+# this will give a general overview of the range of values.
+#A. LocalTime - summary() : gives an overview of the time that has passed during the experiment
+#B. partOfExperiment - levels() : shows what are the different parts of experiment, summary(): shows occurances of those
+#C. scrabbleWindowVisible - levels()
+#D. scrabbleCondition - levels()
+#E. nrCorrectScrabbleWords - summary()
+#F. Eventmessage1 - levels()
+#G. Eventmessage2 - summary()
+
+
+tableTypeTask <- resultTable[resultTable$partOfExperiment == "practiceTyping",]
+tableTypeTask
+
+unique(tableTypeTask2$Eventmessage1)
+
+library(gdata)
+tableTypeTask2 <- drop.levels(tableTypeTask)
+
+unique(tableTypeTask2$Eventmessage1)
+summary(tableTypeTask2$Eventmessage1)
+# #-correct: 291, #-wrong: 4
+
+tableTypeTask3 <- tableTypeTask2[tableTypeTask2$Eventmessage1 == "keypress" &  tableTypeTask2$LocalTime <= 150,]
+
+nrow(tableTypeTask3[tableTypeTask3$Eventmessage1 =="keypress",])
+ikiCor <- 150/nrow(tableTypeTask3[tableTypeTask3$Eventmessage1 =="keypress",])
+ikiCor
+
+ikiCornNcor <- 150/ length(tableTypeTask2$Eventmessage1)
+ikiCornNcor
+
+
+ikisCorrectOnly <- with(tableTypeTask2[tableTypeTask3$Eventmessage1 =="keypress",],diff(c(0,LocalTime)))
+ikisCorrectOnly
+
+ikisCorrectAndIncorrect <- with(tableTypeTask$Eventmessage1,diff(c(0,LocalTime)))
+ikisCorrectAndIncorrect
+
 
