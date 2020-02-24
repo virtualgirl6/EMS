@@ -113,20 +113,55 @@ print (plot5)
 
 #################
 
-allData <- read.csv("allData.Rdata", header=TRUE,sep="")
+load("/Users/victoriabosch/GitHub/EMS/allData.rdata")
 summary(allData)
 
 head(allData)
 
 
 ### hypothesis 
-#  1. What is the independent variable? What "levels" does this variable have?
+#  1. What is the independent variable? What "levels" does this variable have? 
+#       scrabble condition (easy, hard, neutral)
 #  2. What is the dependent variable?
+#       av number of generated words 
 #  3. Based on literature (e.g., the Payne et al article that was discussed in class): what
-# would you expect to happen if there is a significant effect for this dependent and independent variable? Stated differently: what do you expect that the H0 is, and what is the alternative hypothesis (H1)?
-  
+# would you expect to happen if there is a significant effect for this dependent and independent 
+#variable? Stated differently: what do you expect that the H0 is, and what is the alternative hypothesis (H1)?
+#     H0: The score is not positively influenced by taskswitching
+#     H1: The score is positively influenced by taskswitching
 
+participants2018 <- allData[allData$SubjectNr >= 301 & allData$SubjectNr <= 348,]
+unique(allData$SubjectNr)
+unique(participants2018$SubjectNr)
+correctP18 <- participants2018[participants2018$partOfExperiment=="dualTask" & 
+                               participants2018$Eventmessage1 == "scoreGiven",]
+summary(correctP18)
 
+allDataEndOfTrialsDualTaskOnly <- participants2018[participants2018$partOfExperiment=="dualTask" & 
+                                                     participants2018$Eventmessage1 == "scoreGiven",]
 
+require(plyr)
+samenvatting <- ddply(allDataEndOfTrialsDualTaskOnly, c("Eventmessage2", "SubjectNr"), summarise, gemiddelde = mean(Eventmessage2, na.rm=TRUE),
+                       maximum = max(Eventmessage2),
+                       minimum = min(Eventmessage2),
+                       eerste = head(Eventmessage2, n=1))
 
+averageNrScrabbleWords <- with(allDataEndOfTrialsDualTaskOnly,aggregate(CurrentScore,list(SubjectNr=SubjectNr,
+                                                                scrabbleCondition=scrabbleCondition),mean) )
+
+data_plot <- ggplot(averageNrScrabbleWords, aes(x=scrabbleCondition, y=x)) +
+  geom_boxplot(stat = "boxplot")
+print(data_plot)
+
+with(averageNrScrabbleWords,tapply(x,SubjectNr,mean))
+
+meanGroup <- with(averageNrScrabbleWords, aggregate(x, list(scrabbleCondition=scrabbleCondition), mean))
+bar_plot <- barplot(meanGroup$x, ylab = 'score', xlab='scrabbleCondition', names.arg = meanGroup$scrabbleCondition, 
+                    col = "darkred", ylim = range(pretty(c(0, meanGroup$x)))) 
+
+source("usefulFunctions.R")
+
+#
+summaryScrabble <- summarySEwithin(averageNrScrabbleWords2 , measurevar="meanN", withinvars=c("scrabbleCondition"))
+print(summaryScrabble)
 
