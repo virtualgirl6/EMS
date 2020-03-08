@@ -80,4 +80,36 @@ plothard3 <- ploteasy3 + geom_point(data=dataHard, aes(x = 0:100, y=rowMean, col
   geom_errorbar(data=dataHard, aes(x=0:100, ymin=rowMean - rowSD , ymax=rowMean + rowSD))
 plothard3
 
+combinedData = data.frame(unit = 1:101)
 
+for (i in 1:150)
+{
+  for(j in 1:150)
+  {
+    #print(rev(dataEasy[,i]) + dataHard[,j])
+    #combinedData <- rev(dataEasy[,i]) + dataHard[,j]
+    combinedData <- cbind(combinedData, rev(dataEasy[,i]) + dataHard[,j])
+  }
+}
+
+
+combinedData$rowMean <- apply(combinedData[,2:22501],1, mean)
+combinedData$rowSD <- apply(combinedData[,2:22501], 1, sd)
+
+voorplot <- apply(combinedData[,2:22501],1, mean)
+voorplot2 <- apply(combinedData[,2:22501], 1, sd)
+
+
+combinedDataPlot <- ggplot(combinedData) +
+  xlab("Time spent on hard Task") +
+  ylab("Number of Words") +
+  ggtitle("Aver") +
+  scale_x_continuous(limits=c(0,100), breaks=seq(0,100,10)) +
+  scale_y_continuous(limits=c(0,40), breaks=seq(0,40,5)) +
+  theme_minimal() +
+  theme(axis.line = element_line(colour = "black", size = 1, linetype = "solid"))
+
+print(combinedDataPlot)
+
+combWithLine <- combinedDataPlot + geom_point(data=combinedData[,22501:22503], aes(x = 0:100, y=rowMean, colour="number of words"))  + 
+                                   geom_errorbar(data=combinedData[,22501:22503], aes(x=0:100, ymin=rowMean - rowSD , ymax=rowMean + rowSD))
