@@ -70,30 +70,32 @@ print(iki_plot)
 ###SCRABBLE TYPE TASK
 ###
 
-scrabbleTypeTask <- allData[allData$partOfExperiment == "practiceScrabble" & allData$WordScore == 14 & allData$nrCorrectScrabbleWords > 0,]
+scrabbleTypeTask <- allData[allData$partOfExperiment == "practiceScrabble" & allData$WordScore == 28 &
+                              allData$Eventmessage2 == "correctNewWord",]
 tableScrabbleTask2 <- drop.levels(scrabbleTypeTask)
 
-sort(summary(tableScrabbleTask2[tableScrabbleTask2$Eventmessage1 == "keypressScrabble",]$Eventmessage2))
+#summary(tableScrabbleTask2[tableScrabbleTask2$Eventmessage1 == "scoreGiven",])
 
-unique(tableScrabbleTask2[tableScrabbleTask2$Eventmessage2 == "correctNewWord",]$currentScrabbleLettersTyped)
+#unique(tableScrabbleTask2[tableScrabbleTask2$Eventmessage2 == "correctNewWord",]$currentScrabbleLettersTyped)
 
 tableScrabbleTask3 <- tableScrabbleTask2[tableScrabbleTask2$LocalTime <= 150,]
+tableScrabbleTask3$unit <- tableScrabbleTask3$LocalTime / 6
 unique(tableScrabbleTask2$scrabbleCondition)
 
 ## Clear and simple plot in which I have influenced what values are shown on the x- and y-axes
-plot3 <- ggplot(tableScrabbleTask3, aes(x=LocalTime, y=nrCorrectScrabbleWords)) +
+plot3 <- ggplot(tableScrabbleTask3, aes(x=unit, y=CurrentScore)) +
   geom_point(shape=21,colour="black", fill="black", size = 1) + #geom_line() +
-  xlab("Time (s)") +
-  ylab("Number of Words") +
+  xlab("Time (unit)") +
+  ylab("Score") +
   ggtitle("Clear plot") +
-  scale_x_continuous(limits=c(0,150), breaks=seq(0,150, 25), minor_breaks = seq(0,150, 5)) +
-  scale_y_continuous(limits=c(0,25), breaks=seq(0,25,5)) +
+  scale_x_continuous(limits=c(0,25), breaks=seq(0,25, 25), minor_breaks = seq(0,150, 5)) +
+  scale_y_continuous(limits=c(0,600), breaks=seq(0,600,50)) +
   theme_minimal() +
   theme(axis.line = element_line(colour = "black", size = 1, linetype = "solid"))
 print(plot3)
 
 ### compare to Payne's data
-time <- seq(1,150,6)  ## time steps of 6 seconds
+time <- seq(1,600,6)  ## time steps of 6 seconds
 PayneTable <- data.frame(time = time)
 PayneTable $unit <- PayneTable $time / 6
 PayneTable $wordsPerUnitEasy <- 0.65* 0.981^(PayneTable $unit-1) 
@@ -101,8 +103,8 @@ PayneTable $wordsPerUnitDifficult <- 0.51* 0.965^(PayneTable $unit-1)
 PayneTable $EasyWords <- cumsum(PayneTable $wordsPerUnitEasy) 
 PayneTable $DifficultWords <- cumsum(PayneTable $wordsPerUnitDifficult)
 
-plot4 <- plot3 + geom_point(data=PayneTable, aes(x = time,y=EasyWords, colour="easy")) 
-plot5 = plot4 + geom_point(data=PayneTable, aes(x = time,y=DifficultWords, colour="hard"))
+plot4 <- plot3 + geom_point(data=PayneTable, aes(x = unit,y=EasyWords, colour="easy")) 
+plot5 <- plot4 + geom_point(data=PayneTable, aes(x = unit,y=DifficultWords, colour="hard"))
 print (plot5)
 
 
@@ -137,7 +139,6 @@ score28EndOnly<- ddply(score28DataCorrect, c("scrabbleCondition", "SubjectNr"), 
                           maximum = max(nrCorrectScrabbleWords),
                           minimum = min(nrCorrectScrabbleWords),
                           eerste = head(nrCorrectScrabbleWords, n=1))
-
 
 
 source("usefulFunctions.R")
