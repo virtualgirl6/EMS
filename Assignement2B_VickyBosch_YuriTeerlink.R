@@ -61,6 +61,7 @@ typeTask14$points <- lpu14 * unitTypeTask
 typeTask28 = data.frame(unit = unitTypeTask)
 typeTask28$points <- lpu28 * unitTypeTask
 
+# plot for typetask
 iki_plot <- ggplot(typeTask14, aes(x=unit, y=points))+
   geom_point(shape=21,colour="black", fill='black', size = 1) + 
   xlab("Time (unit)") +
@@ -68,7 +69,6 @@ iki_plot <- ggplot(typeTask14, aes(x=unit, y=points))+
   ggtitle("Clear plot") 
 
 viki_plot <- iki_plot + geom_point(data=typeTask28, colour="green",aes(x=unit, y=points));viki_plot
-
 
 ####
 #### SCRABBLE TYPE TASK
@@ -82,10 +82,6 @@ tableScrabbleTask14 <- drop.levels(subset(allData, partOfExperiment == "practice
 tableScrabbleTask28 <- drop.levels(subset(allData, partOfExperiment == "practiceScrabble" 
                               & allData$WordScore == 28  
                               & Eventmessage2 == "correctNewWord"))
-
-scrabbleTypeTask <- allData[allData$partOfExperiment == "practiceScrabble" & allData$WordScore == 28 &
-                              allData$Eventmessage2 == "correctNewWord",]
-tableScrabbleTask2 <- drop.levels(scrabbleTypeTask)
 
 # scale Localtime to units 
 tableScrabbleTask14$unit <- tableScrabbleTask14$LocalTime / 6
@@ -137,8 +133,6 @@ scrabbleModel28$wordsPerUnitHard <- (0.49 * 28) * 0.95^(scrabbleModel28$unit)
 scrabbleModel28$HardWords <- cumsum(scrabbleModel28$wordsPerUnitHard)
 scrabble28EasyHard <- scrabble28Easy + geom_point(data=scrabbleModel28, aes(x = unit,y=HardWords, colour="hard"));scrabble28EasyHard
 
-
-
 ####
 #### Combining scrabble with type taske to determine optimal scores
 ####
@@ -159,7 +153,6 @@ optimalScoresPlot1 <- optimalScoresPlot0 + geom_point(data=scrabbleModel14, aes(
 optimalScoresPlot2 <- optimalScoresPlot1 + geom_point(data=scrabbleModel28, aes(x = seq(0,100,4),y=PercentageScrabbleEasy, colour="easy28"))
 optimalScoresPlot3 <- optimalScoresPlot2 + geom_point(data=scrabbleModel28, aes(x = seq(0,100,4),y=PercentageScrabbleHard, colour="hard28"))
 
-
 ####
 #### Adding variability using MonteCarlo-simulation
 ####
@@ -171,7 +164,7 @@ dataType14 = data.frame(unit = 0:25)
 dataType28 = data.frame(unit = 0:25)
 for (i in 1:150)
 {
-  dataEasy14[ , i] <- cumsum((rnorm(1, 1.55, 1.07/10) * 14)* 0.89^(unitTypeTask)) # note: SD from paper is in words/minute --> divide by 10 to get words/unit
+  dataEasy14[ , i] <- cumsum((rnorm(1, 1.55, 1.07/10) * 14)* 0.89^(unitTypeTask)) 
   dataHard14[ , i] <- cumsum((rnorm(1, 0.55, 0.69/10) * 14)* 0.95^(unitTypeTask))
   dataEasy28[ , i] <- cumsum((rnorm(1, 1.51, 1.07/10) * 28)* 0.89^(unitTypeTask)) 
   dataHard28[ , i] <- cumsum((rnorm(1, 0.49, 0.69/10) * 28)* 0.95^(unitTypeTask))
@@ -263,7 +256,7 @@ for (i in 1:150)
 }
 
 # Compute mean, sd, se and ci of each of the combinations obtained in the simulation.
-# Easy14 Model
+# Easy14 Model, 95/ CI = [341.55 , 341.8008], M = 341.6754, SD = 9.596098
 combinedEasy14$rowMean <- apply(combinedEasy14[,2:22501],1, mean)
 combinedEasy14$rowSD <- apply(combinedEasy14[,2:22501], 1, sd)
 meanEasy14Model <- max(combinedEasy14$rowMean)
@@ -273,7 +266,7 @@ seEasy14Model<- sdEasy14Model/sqrt(22500)
 ciEasy14Model <- 1.96 * seEasy14Model
 endTableRowEasy14Model <- data.frame(combination='Easy14', dataType='Model', mean=meanEasy14Model, sd=sdEasy14Model, se=seEasy14Model, ci=ciEasy14Model)
 
-# Hard14 Model
+# Hard14 Model, 95/ CI = [311.0371 , 311.2745], M = 311.1558, SD = 9.081792
 combinedHard14$rowMean <- apply(combinedHard14[,2:22501],1, mean)
 combinedHard14$rowSD <- apply(combinedHard14[,2:22501], 1, sd)
 meanHard14Model <- max(combinedHard14$rowMean)
@@ -283,7 +276,7 @@ seHard14Model<- sdHard14Model/sqrt(22500)
 ciHard14Model <- 1.96 * seHard14Model
 endTableRowHard14Model <- data.frame(combination='Hard14', dataType='Model', mean=meanHard14Model, sd=sdHard14Model, se=seHard14Model, ci=ciHard14Model)
 
-# Easy28 Model
+# Easy28 Model, 95/ CI = [466.1798 , 466.7043], M = 466.4421, SD = 20.07147
 combinedEasy28$rowMean <- apply(combinedEasy28[,2:22501],1, mean)
 combinedEasy28$rowSD <- apply(combinedEasy28[,2:22501], 1, sd)
 meanEasy28Model <- max(combinedEasy28$rowMean)
@@ -293,7 +286,7 @@ seEasy28Model<- sdEasy28Model/sqrt(22500)
 ciEasy28Model <- 1.96 * seEasy28Model
 endTableRowEasy28Model <- data.frame(combination='Easy28', dataType='Model', mean=meanEasy28Model, sd=sdEasy28Model, se=seEasy28Model, ci=ciEasy28Model)
 
-# Hard28 Model
+# Hard28 Model, 95/ CI = [326.8449 , 327.1006], M = 326.9727, SD = 9.78315
 combinedHard28$rowMean <- apply(combinedHard28[,2:22501],1, mean)
 combinedHard28$rowSD <- apply(combinedHard28[,2:22501], 1, sd)
 meanHard28Model <- max(combinedHard28$rowMean)
@@ -316,28 +309,28 @@ score28EndOnly<- ddply(score28DataCorrect, c("scrabbleCondition", "SubjectNr"), 
 summaryScrabble14 <- summarySEwithin(score14EndOnly , measurevar="gemiddelde", withinvars=c("scrabbleCondition"))
 summaryScrabble28 <- summarySEwithin(score28EndOnly , measurevar="gemiddelde", withinvars=c("scrabbleCondition"))
 
-# Easy14 Data 
+# Easy14 Data, 95% CI = [307.613, 364.7828]
 meanEasy14Data <- subset(summaryScrabble14, scrabbleCondition == 'easy')$gemiddelde
 sdEasy14Data <- subset(summaryScrabble14, scrabbleCondition == 'easy')$sd
 seEasy14Data<- subset(summaryScrabble14, scrabbleCondition == 'easy')$se
 ciEasy14Data <- subset(summaryScrabble14, scrabbleCondition == 'easy')$ci
 endTableRowEasy14Data <- data.frame(combination='Easy14', dataType='Experiment', mean=meanEasy14Data, sd=sdEasy14Data, se=seEasy14Data, ci=ciEasy14Data)
 
-# Hard14 Data
+# Hard14 Data, 95% CI = [253.6277, 302.2056]
 meanHard14Data <- subset(summaryScrabble14, scrabbleCondition == 'hard')$gemiddelde
 sdHard14Data <- subset(summaryScrabble14, scrabbleCondition == 'hard')$sd
 seHard14Data<- subset(summaryScrabble14, scrabbleCondition == 'hard')$se
 ciHard14Data <- subset(summaryScrabble14, scrabbleCondition == 'hard')$ci
 endTableRowHard14Data <- data.frame(combination='Hard14', dataType='Experiment', mean=meanHard14Data, sd=sdHard14Data, se=seHard14Data, ci=ciHard14Data)
 
-# Easy28 Data
+# Easy28 Data, 95% CI = [447.3396, 531.5979]
 meanEasy28Data <- subset(summaryScrabble28, scrabbleCondition == 'easy')$gemiddelde
 sdEasy28Data <- subset(summaryScrabble28, scrabbleCondition == 'easy')$sd
 seEasy28Data<- subset(summaryScrabble28, scrabbleCondition == 'easy')$se
 ciEasy28Data <- subset(summaryScrabble28, scrabbleCondition == 'easy')$ci
 endTableRowEasy28Data <- data.frame(combination='Easy28', dataType='Experiment', mean=meanEasy28Data, sd=sdEasy28Data, se=seEasy28Data, ci=ciEasy28Data)
 
-# Hard28 Data
+# Hard28 Data, 95% CI = [317.3341, 374.2075]
 meanHard28Data <- subset(summaryScrabble28, scrabbleCondition == 'hard')$gemiddelde
 sdHard28Data <- subset(summaryScrabble28, scrabbleCondition == 'hard')$sd
 seHard28Data<- subset(summaryScrabble28, scrabbleCondition == 'hard')$se
@@ -368,15 +361,31 @@ combWithLine <- combWithLine + geom_point(data=combinedHard28[,22501:22503], aes
 endTabelAllData <- rbind(endTableRowEasy14Data, endTableRowHard14Data, endTableRowEasy28Data, endTableRowHard28Data,
                          endTableRowEasy14Model, endTableRowHard14Model, endTableRowEasy28Model, endTableRowHard28Model)
 
-
+# bar plot model + experiment data
 finalBarplot <- ggplot(endTabelAllData, aes(fill=dataType , y=mean, x=combination)) + 
   geom_bar(position="dodge", stat="identity") +
   geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2, position=position_dodge(.9))+
-  ylab("Average Number of Words") +
+  scale_fill_grey() +
+  ylab("Average Score") +
   xlab("Task Difficulty and Word Score") +
-  theme(legend.title = element_blank())
+  theme(legend.title = element_blank()) 
+finalBarplot
 
+# bar plot experiment data
+summaryScrabble14$wordScore <- 'Word Score 14'
+summaryScrabble28$wordScore <- 'Word Score 28'
+endTabelExperimentData <- rbind(summaryScrabble14, summaryScrabble28)
+endTabelExperimentData$Label <- NA
+endTabelExperimentData[endTabelExperimentData$scrabbleCondition == 'easy',]$Label <- 'Easy'
+endTabelExperimentData[endTabelExperimentData$scrabbleCondition == 'hard',]$Label <- 'Hard'
 
+finalPlotExperiment <- ggplot(endTabelExperimentData, aes(fill=Label , y=gemiddelde, x=wordScore)) + 
+  geom_bar(position="dodge", stat="identity") +
+  geom_errorbar(aes(ymin=gemiddelde-sd, ymax=gemiddelde+sd), width=.2, position=position_dodge(.9))+
+  scale_fill_grey() +
+  ylab("Average Score") +
+  xlab("Task Difficulty and Word Score") +
+  theme(legend.title = element_blank()) 
 
 
 ####
@@ -388,12 +397,19 @@ finalBarplot <- ggplot(endTabelAllData, aes(fill=dataType , y=mean, x=combinatio
 with(score14EndOnly,t.test(gemiddelde~ scrabbleCondition,paired=TRUE))
 with(score28EndOnly,t.test(gemiddelde~ scrabbleCondition,paired=TRUE))
 
-# RMSE - 22.46352 - 6.21
+# Effectsize
+averageSqrt14Data <- sqrt((sdEasy14Data**2 + sdHard14Data**2)/2)
+effectSize14Data <- (meanEasy14Data - meanHard14Data)/averageSqrt14Data
+
+averageSqrt28Data <- sqrt((sdEasy28Data**2 + sdHard28Data**2)/2)
+effectSize28Data <- (meanEasy28Data - meanHard28Data)/averageSqrt28Data
+
+# RMSE - 22.46352 - 6.21%
 RMSE <- sqrt(((meanEasy14Data - meanEasy14Model)^2 + (meanHard14Data - meanHard14Model)^2 + 
                 (meanEasy28Data - meanEasy28Model)^2 + (meanHard28Data - meanHard28Model)^2) / 4)
 percentageRMSEOfTotal <- (RMSE/((meanEasy14Data + meanEasy14Model + meanHard14Data + meanHard14Model +
                                meanEasy28Data + meanEasy28Model + meanHard28Data + meanHard28Model)/8)) * 100
-# R^2
+# R^2: 0.9752878
 meanModel <- c(meanEasy14Model, meanHard14Model, meanEasy28Model, meanHard28Model)
 meanData <- c(meanEasy14Data, meanHard14Data, meanEasy28Data, meanHard28Data)
 RxR <- cor(meanModel, meanData)
